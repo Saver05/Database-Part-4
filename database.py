@@ -9,6 +9,7 @@ def connect_to_database():
             password="Triforce3!",  # Replace with your actual password
             database="MuskieCo"
         )
+        set_up_database(conn)
         return conn
     except Exception as e:
         print(f"Error connecting to database: {e}")

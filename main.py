@@ -1,11 +1,9 @@
 # main.py
-from database import add_store, update_store, delete_store, search_store, get_input, connect_to_database, \
-    set_up_database
+from database import add_store, update_store, delete_store, search_store, get_input, connect_to_database
 
 
 def main():
     conn = connect_to_database()
-    set_up_database(conn)
     while True:
         print("--- MuskieCo Main Menu ---")
         print("Which task would you like to perform?")
