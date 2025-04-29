@@ -14,6 +14,20 @@ def connect_to_database():
         print(f"Error connecting to database: {e}")
         exit(1)
 
+def set_up_database(conn):
+    with open("Database.sql", "r") as file:
+        sql_script = file.read()
+    statements = [stmt.strip() for stmt in sql_script.split(';') if stmt.strip()]
+
+    with conn.cursor() as cursor:
+        for stmt in statements:
+            try:
+                cursor.execute(stmt)
+            except Exception as e:
+                print(f"Error executing statement: {stmt}\n{e}")
+
+    conn.commit()
+
 def get_input(prompt):
     return input(prompt + ": ")
 
