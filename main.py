@@ -1,5 +1,6 @@
 # main.py
-from database import add_store, update_store, delete_store, search_store, get_input, connect_to_database
+from database import add_store, update_store, delete_store, search_store, get_input, connect_to_database, add_product, \
+    get_product, update_product, delete_product
 
 
 def main():
@@ -23,10 +24,10 @@ def main():
             sub_choice = input("Enter choice: ")
 
             if sub_choice == "1":
-                store_address = get_input("Store Address")  # Get store address from user input
-                location = get_input("Location")  # Get location from user input
-                # Assuming StoreID, ManagerID, StoreAddress, PhoneNumber are provided
-                add_store(conn, store_address, location)  # Call the add_store function
+                store_address = get_input("Store Address")  # Get the store address from user input
+                phone_number = get_input("Phone Number")
+                manager_id = get_input("Manager ID")
+                add_store(conn, store_address, phone_number, manager_id)  # Call the add_store function
             elif sub_choice == "2":
                 store_id = get_input("Store ID")
                 new_address = get_input("New Store Address")
@@ -44,6 +45,59 @@ def main():
             print("2. Update Product")
             print("3. Delete Product")
             sub_choice = input("Enter choice: ")
+            match sub_choice:
+                case 1:
+                    product_id = get_input("Enter Product ID: ")
+                    product_name = get_input("Enter Product Name: ")
+                    QuantityInStock = get_input("Enter Quantity In Stock: ")
+                    BuyPrice = get_input("Enter Buy Price: ")
+                    SellPrice = get_input("Enter Sell Price: ")
+                    store_id = get_input("Enter Store ID: ")
+                    add_product(conn, product_id, product_name, QuantityInStock, BuyPrice, SellPrice, store_id)
+                case 2:
+                    product_id = get_input("Enter Product ID: ")
+                    product = get_product(conn, product_id)
+                    print("\n--- What would you like to update? ---")
+                    print("1. Product Name")
+                    print("2. Quantity In Stock")
+                    print("3. Buy Price")
+                    print("4. Sell Price")
+                    print("5. Store ID")
+                    update_choice = input("Enter choice: ")
+                    match update_choice:
+                        case 1:
+                            product_name = get_input("Enter new Product Name: ")
+                            update_product(conn, product[0], product_name, product[2], product[3], product[4],
+                                           product[5])
+                        case 2:
+                            QuantityInStock = get_input("Enter new Quantity In Stock: ")
+                            update_product(conn, product[0], product[1], product[2], QuantityInStock, product[4],
+                                           product[5])
+                        case 3:
+                            BuyPrice = get_input("Enter new Buy Price: ")
+                            update_product(conn, product[0], product[1], product[2], BuyPrice, product[4], product[5])
+                        case 4:
+                            SellPrice = get_input("Enter new Sell Price: ")
+                            update_product(conn, product[0], product[1], product[2], product[3], SellPrice, product[5])
+                        case 5:
+                            store_id = get_input("Enter new Store ID: ")
+                            update_product(conn, product[0], product[1], product[2], product[3], product[4], store_id)
+                        case _:
+                            print("Invalid choice. Please try again.")
+                case 3:
+                    product_id = get_input("Enter Product ID: ")
+                    get_product(conn, product_id)
+                    print("\n--- Are you sure you want to delete this product? ---")
+                    update_choice = input("Enter 'yes' to confirm: ")
+                    match update_choice:
+                        case "yes":
+                            delete_product(conn, product_id)
+                            print("Product deleted successfully.")
+                        case "no":
+                            print("Product deletion cancelled.")
+                        case _:
+                            print("Invalid choice. Please try again.")
+
             # Handle options similarly for inventory-related tasks...
 
         elif choice == "3":

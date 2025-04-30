@@ -6,7 +6,7 @@ USE MuskieCo;
 
 -- Store Table
 CREATE TABLE Store (
-    StoreID INT PRIMARY KEY,
+                       StoreID INT AUTO_INCREMENT PRIMARY KEY,
     ManagerID INT UNIQUE,
     StoreAddress VARCHAR(255) NOT NULL UNIQUE,
     PhoneNumber VARCHAR(15) UNIQUE
