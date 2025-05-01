@@ -6,7 +6,7 @@ USE MuskieCo;
 
 -- Store Table
 CREATE TABLE Store (
-                       StoreID INT AUTO_INCREMENT PRIMARY KEY,
+    StoreID INT AUTO_INCREMENT PRIMARY KEY,
     ManagerID INT UNIQUE,
     StoreAddress VARCHAR(255) NOT NULL UNIQUE,
     PhoneNumber VARCHAR(15) UNIQUE
@@ -61,7 +61,7 @@ CREATE TABLE Product (
 
 -- Transaction Table
 CREATE TABLE Transaction (
-    TransactionID INT PRIMARY KEY,
+    TransactionID INT AUTO_INCREMENT PRIMARY KEY,
     StoreID INT,
     CustomerID INT,
     CashierID INT,

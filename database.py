@@ -19,7 +19,7 @@ def connect_to_database():
             user="root",  # default MySQL username
             password="Triforce3!",  # Replace with your actual password
             database="MuskieCo",  # database name
-            port=3306  # standard MySQL port
+            port=3307  # standard MySQL port
         )
         # Set up database schema if not already done
         set_up_database(conn)
@@ -280,3 +280,61 @@ def delete_product(conn, product_id):
     except Exception as e:
         # Handle errors during product deletion
         print(f"Error deleting product: {e}")
+
+def add_transaction(conn, storeid, customerid, cashierid, purchasedate, totalprice, transactiontype):
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("INSERT INTO Transaction (StoreID, CustomerID, CashierID, PurchaseDate, TotalPrice, TransactionType) VALUES (%s, %s, %s, %s, %s, %s)")
+            transaction_id = cursor.lastrowid
+            conn.commit()
+            print("Transaction added successfully.")
+            return transaction_id
+    except Exception as e:
+        print(f"Error adding transaction: {e}")
+
+def get_transaction(conn, transaction_id):
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("Select * from Transaction where TransactionID = %s", (transaction_id,))
+            transaction = cursor.fetchone()
+            cursor.execute("Select * from ProductTransaction where TransactionID = %s", (transaction_id,))
+            products = cursor.fetchall()
+            if transaction:
+                print(transaction)
+                print(products)
+                return None
+            else:
+                print("Transaction not found.")
+                return None
+    except Exception as e:
+        print(f"Error getting transaction: {e}")
+        return None
+
+def add_product_transaction(conn, transaction_id, product_id, quantity, discountapplied):
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("INSERT INTO ProductTransaction (TransactionID, ProductID, Quantity, DiscountPercentageApplied) VALUES (%s, %s, %s, %s)", (transaction_id, product_id, quantity, discountapplied))
+            conn.commit()
+            print("Product added successfully.")
+            get_transaction(conn, transaction_id)
+            return None
+    except Exception as e:
+        print(f"Error adding product transaction: {e}")
+        return None
+
+def get_transaction_price(conn, transaction_id):
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("Select ProductID, Quantity from ProductTransaction where TransactionID = %s", (transaction_id,))
+            products = cursor.fetchall()
+            total_price = 0
+            for product in products:
+                product_id = product[0]
+                quantity = product[1]
+                product_info = get_product(conn, product_id)
+                sell_price = product_info[4]
+                total_price += sell_price * quantity
+            return total_price
+    except Exception as e:
+        print(f"Error getting transaction price: {e}")
+        return None
