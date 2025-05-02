@@ -8,7 +8,7 @@ def main():
     Main function that serves as the entry point for the MuskieCo management system.
     
     This function creates a database connection and presents a menu-driven interface
-    allowing users to perform various operations including:
+    allowing users to perform various operations including
     - Information Processing (store management)
     - Inventory Records (product management)
     - Billing and Transaction Records
@@ -63,7 +63,7 @@ def main():
             # Allows modifying store details like address, phone number, and manager
             elif sub_choice == "2":
                 print("Enter the store ID to update.")
-                store_id = get_input("Store ID")  # Get ID of store to update
+                store_id = int(get_input("Store ID"))  # Get ID of store to update
                 
                 # Retrieve store details to display and update
                 # search_store fetches the store record and returns it as a tuple
@@ -105,14 +105,14 @@ def main():
             # Option 3: Delete a store
             # Removes a store from the database by ID
             elif sub_choice == "3":
-                store_id = get_input("Store ID")  # Get ID of store to delete
+                store_id = int(input("Store ID")) # Get ID of store to delete
                 # Delete the store with the given ID from the database
                 delete_store(conn, store_id)
 
             # Option 4: Search for a store
             # Retrieves and displays store information by ID
             elif sub_choice == "4":
-                store_id = get_input("Store ID")  # Get ID of store to search for
+                store_id = int(get_input("Store ID"))  # Get ID of store to search for
                 # Search for and display store information
                 # search_store handles both retrieval and display of the store data
                 search_store(conn, store_id)
@@ -142,10 +142,10 @@ def main():
                     # Collect all required information for a new product through user input
                     product_id = get_input("Enter Product ID: ")
                     product_name = get_input("Enter Product Name: ")
-                    QuantityInStock = get_input("Enter Quantity In Stock: ")
-                    BuyPrice = get_input("Enter Buy Price: ")
-                    SellPrice = get_input("Enter Sell Price: ")
-                    store_id = get_input("Enter Store ID: ")
+                    QuantityInStock = int(get_input("Enter Quantity In Stock: "))
+                    BuyPrice = float(get_input("Enter Buy Price: "))
+                    SellPrice = float(get_input("Enter Sell Price: "))
+                    store_id = int(get_input("Enter Store ID: "))
                     
                     # Add the product to the database using the collected information
                     # The add_product function is defined in database.py
@@ -186,28 +186,28 @@ def main():
 
                             # Update quantity in stock
                             case 2:
-                                QuantityInStock = get_input("Enter new Quantity In Stock: ")
+                                QuantityInStock = float(get_input("Enter new Quantity In Stock: "))
                                 # Keep other fields the same, only update the quantity
                                 update_product(conn, product[0], product[1], product[2], QuantityInStock, product[4],
                                                product[5])
 
                             # Update buy price
                             case 3:
-                                BuyPrice = get_input("Enter new Buy Price: ")
+                                BuyPrice = float(get_input("Enter new Buy Price: "))
                                 # Keep other fields the same, only update the buy price
                                 update_product(conn, product[0], product[1], product[2], BuyPrice, product[4],
                                                product[5])
 
                             # Update sell price
                             case 4:
-                                SellPrice = get_input("Enter new Sell Price: ")
+                                SellPrice = float(get_input("Enter new Sell Price: "))
                                 # Keep other fields the same, only update the sell price
                                 update_product(conn, product[0], product[1], product[2], product[3], SellPrice,
                                                product[5])
 
                             # Update store ID
                             case 5:
-                                store_id = get_input("Enter new Store ID: ")
+                                store_id = int(get_input("Enter new Store ID: "))
                                 # Keep other fields the same, only update the store ID
                                 update_product(conn, product[0], product[1], product[2], product[3], product[4],
                                                store_id)
@@ -268,89 +268,177 @@ def main():
                 # Creates a new transaction record with customer, store, and cashier info
                 case 1:
                     # Collect all required information for a new transaction
-                    storeid = input("Enter Store ID: ")        # Store where transaction occurred
-                    customerid = input("Enter Customer ID: ")  # Customer who made the purchase
-                    cashierid = input("Enter Cashier ID: ")    # Staff who processed the transaction
+                    storeid = int(input("Enter Store ID: "))        # Store where transaction occurred
+                    customerid = int(input("Enter Customer ID: "))  # Customer who made the purchase
+                    cashierid = int(input("Enter Cashier ID: "))    # Staff who processed the transaction
                     purchasedate = input("Enter Purchase Date: ")  # Date of purchase
-                    totalprice = input("Total Price: ")        # Initial total price
+                    totalprice = float(input("Total Price: "))        # Initial total price
                     Transactiontype = input("Transaction Type: ")  # Buy or Return
                     
                     # Add the transaction to the database and display the generated ID
-                    print("Transaction id: "+add_transaction(conn, storeid, customerid, cashierid, purchasedate, totalprice, Transactiontype))
+                    print("Transaction id: "+ str(add_transaction(conn, storeid, customerid, cashierid, purchasedate, totalprice, Transactiontype)))
                 
                 # Option 2: Add a product to an existing transaction
                 # Associates products with transactions and records quantities
                 case 2:
-                    # Get the transaction ID to which the product will be added
-                    transactionid = input("Enter Transaction ID: ")
+                    transaction_id = int(input("Enter Transaction ID: "))
+
+                    # Collect multiple products to add to the transaction
+                    # Using a loop to allow adding any number of products
+                    product_entries = []
+                    while True:
+                        # Get product ID or exit the loop if user is done
+                        product_id = input("Enter Product ID (or 'done' to finish): ")
+                        if product_id.lower() == "done":
+                            break
+                        
+                        # Get quantity of this product in the transaction
+                        quantity = input("Enter Quantity: ")
+                        
+                        # Get discount percentage applied to this product
+                        # Discounts are stored as percentages (e.g., 10 for 10%)
+                        discount = input("Discount Applied %: ")
                     
-                    # Display the current transaction details for reference
-                    get_transaction(conn, transactionid)
+                        # Add the product data to our collection
+                        # Using dictionary to organize the data for each product
+                        product_entries.append({
+                            'product_id': product_id,    # The product identifier
+                            'quantity': quantity,        # How many units were purchased
+                            'discount': discount         # Discount percentage applied
+                        })
                     
-                    # Collect product information to add to the transaction
-                    productid = input("Enter Product ID: ")       # Product being purchased
-                    quantity = input("Enter Quantity: ")          # Number of items purchased
-                    discountapplied = input("Discount Applied %: ")  # Discount percentage if any
-                    
-                    # Add the product to the transaction in the database
-                    add_product_transaction(conn, transactionid, productid, quantity, discountapplied)
-                
-                # Option 3: Calculate the total price of a transaction
-                # Computes the sum of all products in a transaction
+                    # Add all products to the transaction in a single database operation
+                    # This ensures all products are added or none are (transaction integrity)
+                    # The function handles the SQL insert operations for all products
+                    add_products_to_transaction(conn, transaction_id, product_entries)
+                                    
+                                    # Option 3: Calculate the total price of a transaction
+                                    # Computes the sum of all products in a transaction
+                                    # Total is based on sell price, quantity, and any discounts
                 case 3:
                     # Get the transaction ID to calculate
-                    transactionid = input("Enter Transaction ID: ")
+                    # The ID identifies which transaction to compute total for
+                    transactionid = int(input("Enter Transaction ID: "))
                     
                     # Display the current transaction details for reference
+                    # This shows what items are included in the total
                     get_transaction(conn, transactionid)
                     
                     # Calculate and display the total price of all items in the transaction
+                    # This function computes the sum based on product prices and quantities
                     totalprice = get_transaction_price(conn, transactionid)
                     print("Transaction Total: "+str(totalprice))
-                
-                # Handle invalid transaction menu choice with wildcard pattern match
+                                    
+                                    # Handle invalid transaction menu choice with wildcard pattern match
+                                    # Provides feedback if user enters an unrecognized option
                 case _:
                     print("Invalid choice. Please try again.")
-
-        # =====================================================================
-        # Reports menu (placeholder for future functionality)
-        # Will handle generation of various business reports
-        # =====================================================================
+                    
+                            # =====================================================================
+                            # Reports menu
+                            # Handles generation of various business reports
+                            # These reports provide business insights and statistics
+                            # =====================================================================
         elif choice == "4":
             # Display the reports menu
+            # Each option generates a different type of business report
             print("\n--- Reports ---")
             print("1. Monthly Customer Activity Report")
             print("2. Annual Sales Report")
             print("3. Product Stock Report")
             sub_choice = input("Enter choice: ")
-            
-            # This section is a placeholder for future reporting functionality
-            # Would implement generation of various business reports such as:
-            # - Customer activity tracking
-            # - Sales analysis over time
-            # - Inventory levels and turnover rates
-            print("This functionality is not yet implemented.")
 
+            # Using match-case to handle reports menu options
+            # Each case handles generating a different report
+            match sub_choice:
+                # Option 1: Generate monthly customer activity report
+                # Shows all transactions for a specific customer in a given month
+                case "1":
+                    # Get the customer ID for the report
+                    customerid = int(input("Enter Customer ID: "))
+                    
+                    # Retrieve and display customer information for verification
+                    # This confirms we have the right customer
+                    customer = get_customer(conn, customerid)
+                    
+                    # Get the month in YYYY-MM format to filter transactions
+                    month = int(input("Enter Month (YYYY-MM): "))
+                    
+                    # Generate and display the report of transactions for this customer and month
+                    # The function handles retrieving and formatting the transaction data
+                    transactions = get_transactions_month(conn, customerid, month)
+                                    
+                # Option 2: Generate annual sales report
+                # Shows all sales for a specific store in a given year
+                case "2":
+                    # Get the store ID for the report
+                    store_id = int(input("Enter Store ID: "))
+                    
+                    # Retrieve and display store information for verification
+                    # This confirms we have the right store
+                    search_store(conn, store_id)
+                    
+                    # Get the year to filter transactions
+                    year = int(input("Enter year (YYYY):"))
+                    
+                    # Generate and display the annual sales report for this store and year
+                    # The function handles retrieving and formatting the sales data
+                    sales = get_sales_report(conn, store_id, year)
+                                    
+                # Option 3: Generate product stock report
+                # Shows current inventory levels for specified products at a store
+                case "3":
+                    # Get the store ID for the report
+                    store_id = int(input("Enter Store ID: "))
+                    
+                    # Retrieve and display store information for verification
+                    # This confirms we have the right store
+                    search_store(conn, store_id)
+                    
+                    # Collect multiple product IDs to include in the report
+                    # Using a loop to allow adding any number of products
+                    product_ids = []
+                    while True:
+                        # Get product ID or exit the loop if user is done
+                        product_id = input("Enter Product ID (or 'done' to finish): ")
+                        if product_id.lower() == "done":
+                            break
+                        # Add this product ID to our collection
+                        product_ids.append(product_id)
+                    
+                    # Generate and display the stock report for these products at this store
+                    # The function handles retrieving and formatting the inventory data
+                    get_products_quantity(conn, store_id, product_ids)
+                                    
+                                    # Handle invalid report menu choice with wildcard pattern match
+                                    # Provides feedback if user enters an unrecognized option
+                case _:
+                    print("Invalid choice. Please try again.")
+                    
         # =====================================================================
         # Exit the program
         # Breaks out of the main loop and closes the database connection
+        # This is the clean way to terminate the program
         # =====================================================================
         elif choice == "0":
             print("Exiting...")
             break  # Exit the main program loop
-
+                    
         # =====================================================================
         # Handle invalid main menu choice
         # Catches any input that doesn't match valid menu options
+        # Provides feedback if user enters an unrecognized option
         # =====================================================================
         else:
             print("Invalid choice. Please try again.")
-
-    # Close the database connection when exiting the program
-    # This ensures proper cleanup of database resources
-    conn.close()
-
+                    
+        # Close the database connection when exiting the program
+        # This ensures proper cleanup of database resources
+        # Prevents database connection leaks and resource issues
+        conn.close()
+                    
 # Standard Python idiom to ensure main() is only called when the script is run directly
 # This allows the script to be imported without running the main function
+# Useful for testing or when incorporating this code into larger systems
 if __name__ == "__main__":
     main()
