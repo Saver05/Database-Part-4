@@ -4,8 +4,8 @@ from database import add_products_to_transaction, get_transaction, get_transacti
 def transactions(conn):
     print("1. Add Transaction")
     print("2. Add Product to Transaction")
-    print("1. Calculate Transaction Total")
-    sub_choice = input("Enter choice: ")
+    print("3. Calculate Transaction Total")
+    sub_choice = int(input("Enter choice: "))
 
     # Using match-case to handle transaction menu options
     match sub_choice:

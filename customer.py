@@ -19,7 +19,11 @@ def customer(conn):
             rewardspoints = 0
             create_customer(conn,CustomerID, first_name, last_name, email, phonenumber, homeaddress, isActive, signupdate, rewardspoints)
         case "2":
-            customer = search_customer(conn,int(input("Enter Customer ID: ")))
+            customer_data = search_customer(conn,int(input("Enter Customer ID: ")))
+            if not customer_data:
+                print("No Customer found")
+                return
+            customer = list(customer_data)
             print("What would you like to update?")
             print("1. First Name")
             print("2. Last Name")

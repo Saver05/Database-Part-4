@@ -18,7 +18,11 @@ def staff(conn):
             StartDate = input("Enter start date (YYYY-MM-DD): ")
             create_staff(conn,StaffID, StoreId, Name, Age, HomeAddress, PhoneNumber, Email, StartDate)
         case 2:
-            staff = search_staff(conn,input("Enter Staff ID: "))
+            staff_data = search_staff(conn,input("Enter Staff ID: "))
+            if not staff_data:
+                print("No staff found")
+                return
+            staff = list(staff_data)
             print("What would you like to update?")
             print("1. Store ID")
             print("2. Name")
@@ -43,7 +47,7 @@ def staff(conn):
                     staff[6] = input("Enter new Email: ")
                 case 7:
                     staff[7] = input("Enter new Start Date: ")
-            update_staff(conn, staff[0],staff[1],staff[2],staff[3],staff[4],staff[5],staff[6],staff[7])   
+            update_staff(conn, staff[0],staff[1],staff[2],staff[3],staff[4],staff[5],staff[6],staff[7])
         case 3:
             delete_staff(conn,input("Enter Staff ID: "))
         case 4:

@@ -112,7 +112,7 @@ def main():
                     customer = get_customer(conn, customerid)
                     
                     # Get the month in YYYY-MM format to filter transactions
-                    month = int(input("Enter Month (YYYY-MM): "))
+                    month = int(input("Enter Month (MM): "))
                     
                     # Generate and display the report of transactions for this customer and month
                     # The function handles retrieving and formatting the transaction data

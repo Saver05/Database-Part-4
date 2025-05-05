@@ -8,7 +8,7 @@ def products(conn):
     print("2. Update Product")
     print("3. Delete Product")
     print("4. View Product")
-    sub_choice = input("Enter choice: ")
+    sub_choice = int(input("Enter choice: "))
 
     # Using Python 3.10's match-case statement for cleaner code structure
     # This is more readable than nested if-elif-else statements for many options
@@ -46,7 +46,7 @@ def products(conn):
                 print("3. Buy Price")
                 print("4. Sell Price")
                 print("5. Store ID")
-                update_choice = input("Enter choice: ")
+                update_choice = int(input("Enter choice: "))
 
                 # Using another match-case for update options
                 # This creates a nested menu structure for product updates
@@ -63,9 +63,9 @@ def products(conn):
 
                     # Update quantity in stock
                     case 2:
-                        QuantityInStock = float(get_input("Enter new Quantity In Stock: "))
+                        QuantityInStock = int(get_input("Enter new Quantity In Stock: "))
                         # Keep other fields the same, only update the quantity
-                        update_product(conn, product[0], product[1], product[2], QuantityInStock, product[4],
+                        update_product(conn, product[0], product[1], QuantityInStock, product[3], product[4],
                                        product[5])
 
                     # Update buy price

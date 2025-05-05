@@ -332,7 +332,7 @@ def get_transaction(conn, transaction_id):
             transaction = cursor.fetchone()
             
             # Query the ProductTransaction table for all products in this transaction
-            cursor.execute("Select * from ProductTransaction where TransactionID = %s", (transaction_id,))
+            cursor.execute("Select * from TransactionItem where TransactionID = %s", (transaction_id,))
             products = cursor.fetchall()
             
             if transaction:
@@ -416,7 +416,7 @@ def get_transaction_price(conn, transaction_id):
     try:
         with conn.cursor() as cursor:
             # Get all products in the transaction and their quantities
-            cursor.execute("Select ProductID, Quantity from ProductTransaction where TransactionID = %s", (transaction_id,))
+            cursor.execute("Select ProductID, Quantity from TransactionItem where TransactionID = %s", (transaction_id,))
             products = cursor.fetchall()
             
             # Initialize total price counter
@@ -518,11 +518,7 @@ def get_monthly_sales_report(conn, store_id, year, month):
                 SELECT COUNT(*)        as TotalTransactions,
                        SUM(TotalPrice) as TotalSales
                 FROM Transaction
-                WHERE StoreID = %s
-                    AND YEAR (
-                    PurchaseDate) = YEAR (%s)
-                  AND MONTH (PurchaseDate) = MONTH (%s)
-                  AND TransactionType = 'Buy'
+                WHERE StoreID = %s and Year(PurchaseDate) = %s and Month(PurchaseDate) = %s
                 """,
                 (store_id, year, month)
             )

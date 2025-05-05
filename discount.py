@@ -4,7 +4,7 @@ def discount(conn):
     print("2. Update Discount")
     print("3. Delete Discount")
     print("4. View Discount")
-    choice = input("Enter your choice: ")
+    choice = int(input("Enter your choice: "))
     match choice:
         case 1:
             discount_id = int(input("Enter Discount ID: "))
@@ -13,7 +13,8 @@ def discount(conn):
             add_discount(conn,discount_id,product_id,store_id)
         case 2:
             discount_id = int(input("Enter Discount ID: "))
-            discount = search_discount(conn,discount_id)
+            discount_data = search_discount(conn,discount_id)
+            discount = list(discount_data)
             print("What would you like to update?")
             print("1. Product ID")
             print("2. Store ID")
@@ -28,6 +29,8 @@ def discount(conn):
         case 4:
             discount_id = int(input("Enter Discount ID: "))
             search_discount(conn,discount_id)
+        case _:
+            print("Invalid choice. Please try again.")
 
 
 def delete_discount(conn, discount_id):
