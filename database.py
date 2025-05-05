@@ -508,7 +508,67 @@ def get_transactions_month(conn, customer_id, month):
         print(f"Error getting transactions: {e}")
         return None
 
-def get_sales_report(conn, store_id, year):
+
+def get_monthly_sales_report(conn, store_id, year, month):
+    try:
+        with conn.cursor() as cursor:
+            # Get total sales and transaction count
+            cursor.execute(
+                """
+                SELECT COUNT(*)        as TotalTransactions,
+                       SUM(TotalPrice) as TotalSales
+                FROM Transaction
+                WHERE StoreID = %s
+                    AND YEAR (
+                    PurchaseDate) = YEAR (%s)
+                  AND MONTH (PurchaseDate) = MONTH (%s)
+                  AND TransactionType = 'Buy'
+                """,
+                (store_id, year, month)
+            )
+
+            transactions = cursor.fetchall()
+            if transactions:
+                print(transactions)
+                return transactions
+            else:
+                print(f"No sales data found for store {store_id} in {year}:{month}")
+                return None
+
+    except Exception as e:
+        print(f"Error generating monthly sales report: {e}")
+        return None
+
+
+def get_day_sales_report(conn, store_id, date):
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                """
+                Select *
+                FROM Transaction
+                         JOIN TransactionItem On Transaction.TransactionID = TransactionItem.TransactionID
+                WHERE Transaction.StoreID = %s and Transaction.PurchaseDate = %s
+                """,
+                (store_id, date)
+            )
+            # Fetch all matching sales records
+            transactions = cursor.fetchall()
+
+            if transactions:
+                # Display sales report information if found
+                print(transactions)
+                return transactions
+            else:
+                # If no transactions are found for the store in the specified year
+                print("No transactions not found.")
+                return None
+    except Exception as e:
+        # Handle errors during sales report generation
+        print(f"Error getting sales report: {e}")
+        return None
+
+def get_sales_report_year(conn, store_id, year):
     """
     Generates a sales report for a specific store and year.
     
@@ -547,6 +607,17 @@ def get_sales_report(conn, store_id, year):
     except Exception as e:
         # Handle errors during sales report generation
         print(f"Error getting sales report: {e}")
+        return None
+
+def get_all_products_quantity(conn, store_id):
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT ProductName, QuantityInStock FROM Product WHERE StoreID = %s", (store_id,))
+            products = cursor.fetchall()
+            print(products)
+            return products
+    except Exception as e:
+        print(f"Error getting all products quantity: {e}")
         return None
 
 def get_products_quantity(conn, store_id, product_ids):
