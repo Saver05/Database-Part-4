@@ -510,6 +510,29 @@ def get_transactions_month(conn, customer_id, month):
 
 
 def get_monthly_sales_report(conn, store_id, year, month):
+    """
+    Generates a monthly sales report for a specific store and time period.
+    
+    This function retrieves and summarizes sales data for a specified store during
+    a particular month and year. It calculates the total number of transactions
+    and the total sales amount for the given period.
+    
+    Args:
+        conn (pymysql.connections.Connection): The database connection.
+        store_id (int): The ID of the store to generate the report for.
+        year (str/int): The year (YYYY format) to filter transactions by.
+        month (str/int): The month (MM format) to filter transactions by.
+        
+    Returns:
+        list: A list of tuples containing transaction summary data if found:
+             - First tuple element: Total number of transactions
+             - Second tuple element: Total sales amount
+             Returns None if no transactions are found or if an error occurs.
+             
+    Note:
+        The function prints the results to the console in addition to returning them.
+        If no sales data is found, it prints a notification message.
+    """
     try:
         with conn.cursor() as cursor:
             # Get total sales and transaction count
