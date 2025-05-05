@@ -400,6 +400,7 @@ def add_products_to_transaction(conn, transaction_id, product_entries):
         conn.rollback()  # Rollback on error
         print(f"Error adding products to transaction: {e}")
 
+
 def get_transaction_price(conn, transaction_id):
     """
     Calculates the total price of a transaction based on its product items.
